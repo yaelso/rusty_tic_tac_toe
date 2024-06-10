@@ -7,7 +7,7 @@ use crate::player::Player;
 use crate::board::Board;
 
 fn main() {
-    println!("Enter the size of the tic tac toe board: ");
+    println!("Enter a single dimension to determine the size of the tic tac toe board (e.g. 3 for a 3x3 grid): ");
     let mut size_input = String::new();
     io::stdin().read_line(&mut size_input).expect("Failed to read line.");
     let size: usize = size_input.trim().parse().expect("Plese enter a valid number.");
