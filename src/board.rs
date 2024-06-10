@@ -2,13 +2,15 @@ use crate::player::Player;
 use crate::cell::Cell;
 
 pub struct Board {
-    cells: [[Cell; 3]; 3],
+    pub size: usize,
+    pub cells: Vec<Vec<Cell>>,
 }
 
 impl Board {
-    pub fn new() -> Board {
+    pub fn new(size: usize) -> Board {
         Board {
-            cells: [[Cell(None); 3]; 3],
+            size,
+            cells: vec![vec![Cell(None); size]; size],
         }
     }
 
@@ -26,7 +28,7 @@ impl Board {
     }
 
     pub fn make_move(&mut self, x: usize, y: usize, player: Player) -> bool {
-        if x >= 3 || y >= 3 || self.cells[x][y].0.is_some() {
+        if x >= self.size || y >= self.size || self.cells[x][y].0.is_some() {
             return false;
         }
         self.cells[x][y] = Cell(Some(player));
@@ -36,24 +38,24 @@ impl Board {
     pub fn check_winner(&self) -> Option<Player> {
         // Check rows
         for row in &self.cells {
-            if row[0].0.is_some() && row[0].0 == row[1].0 && row[1].0 == row[2].0 {
+            if row[0].0.is_some() && row.iter().all(|cell| cell.0 == row[0].0) {
                 return row[0].0;
             }
         }
 
         // Check columns
-        for col in 0..3 {
-            if self.cells[0][col].0.is_some() && self.cells[0][col].0 == self.cells[1][col].0 && self.cells[1][col].0 == self.cells[2][col].0 {
+        for col in 0..self.size {
+            if self.cells[0][col].0.is_some() && (0..self.size).all(|row| self.cells[row][col].0 == self.cells[0][col].0) {
                 return self.cells[0][col].0;
             }
         }
 
         // Check diagonals
-        if self.cells[0][0].0.is_some() && self.cells[0][0].0 == self.cells[1][1].0 && self.cells[1][1].0 == self.cells[2][2].0 {
+        if self.cells[0][0].0.is_some() && (0..self.size).all(|i| self.cells[i][i].0 == self.cells[0][0].0) {
             return self.cells[0][0].0;
         }
-        if self.cells[0][2].0.is_some() && self.cells[0][2].0 == self.cells[1][1].0 && self.cells[1][1].0 == self.cells[2][0].0 {
-            return self.cells[0][2].0;
+        if self.cells[0][2].0.is_some() && (0..self.size).all(|i| self.cells[i][self.size - 1 - 1].0 == self.cells[0][self.size - 1].0) {
+            return self.cells[0][self.size - 1].0;
         }
         None
     }

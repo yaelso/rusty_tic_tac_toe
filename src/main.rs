@@ -7,14 +7,20 @@ use crate::player::Player;
 use crate::board::Board;
 
 fn main() {
-    let mut board = Board::new();
+    println!("Enter the size of the tic tac toe board: ");
+    let mut size_input = String::new();
+    io::stdin().read_line(&mut size_input).expect("Failed to read line.");
+    let size: usize = size_input.trim().parse().expect("Plese enter a valid number.");
+
+    let mut board = Board::new(size);
     let mut current_player = Player::X;
+
     loop {
         board.display();
         println!("\nPlayer {}, enter your move as `row` and `column`, separated by a space and starting at position 0 0: ", current_player);
 
         let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Failed to read line");
+        io::stdin().read_line(&mut input).expect("Failed to read line.");
         let coords: Vec<usize> = input.trim().split_whitespace().filter_map(|s| s.parse().ok()).collect();
 
         if coords.len() != 2 {
